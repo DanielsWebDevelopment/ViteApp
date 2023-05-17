@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ToDoListBackEnd.Context;
 using Serilog;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,36 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(dispose: true);
 
 var app = builder.Build();
+
+// Use the middleware to log IP and request details
+app.Use(async (context, next) =>
+{
+    // Get the remote IP address
+    var ipAddress = context.Connection.RemoteIpAddress;
+
+    // Get request details, such as URL, HTTP method, headers, and query parameters
+    var requestUrl = context.Request.Path;
+    var httpMethod = context.Request.Method;
+    var headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
+    var queryParameters = context.Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+
+    // Start a stopwatch to measure the elapsed time
+    var stopwatch = new Stopwatch();
+    stopwatch.Start();
+
+    // Invoke the next middleware in the pipeline
+    await next.Invoke();
+
+    // Stop the stopwatch and calculate the elapsed time
+    stopwatch.Stop();
+    var elapsedTime = stopwatch.ElapsedMilliseconds;
+
+    // Get the response status code
+    var statusCode = context.Response.StatusCode;
+
+    // Log the IP address and request details along with other relevant information
+    Log.Information($"Request from IP: {ipAddress}, URL: {requestUrl}, Method: {httpMethod}, Headers: {headers}, Query Parameters: {queryParameters}, Status Code: {statusCode}, Elapsed Time: {elapsedTime}ms");
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
