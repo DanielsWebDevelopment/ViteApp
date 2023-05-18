@@ -2,6 +2,7 @@
 using ToDoListBackEnd.Context;
 using Serilog;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +33,8 @@ app.Use(async (context, next) =>
     // Get request details, such as URL, HTTP method, headers, and query parameters
     var requestUrl = context.Request.Path;
     var httpMethod = context.Request.Method;
-    var headers = context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
-    var queryParameters = context.Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
+    var headers = JsonConvert.SerializeObject(context.Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString()));
+    var queryParameters = JsonConvert.SerializeObject(context.Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString()));
 
     // Start a stopwatch to measure the elapsed time
     var stopwatch = new Stopwatch();
