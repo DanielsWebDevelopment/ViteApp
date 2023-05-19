@@ -23,9 +23,8 @@ Log.Logger = new LoggerConfiguration()
                                rollOnFileSizeLimit: true,
                                retainedFileCountLimit: 31,
                                shared: true,
-                               flushToDiskInterval: TimeSpan.FromSeconds(0.5)
-
-    ).CreateLogger();
+                               flushToDiskInterval: TimeSpan.FromSeconds(0.5));
+    }).CreateLogger();
 
 // Configure the logging factory
 builder.Logging.ClearProviders();
