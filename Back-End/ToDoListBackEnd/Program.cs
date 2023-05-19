@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ToDoListBackEnd.Context;
 using Serilog;
+using Serilog.Sinks.Async;
+using Serilog.Sinks.File;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
@@ -15,8 +17,15 @@ builder.Services.AddSwaggerGen();
 // Configure Serilog to write to a log file
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .WriteTo.File("logs/log.txt")
-    .CreateLogger();
+    .WriteTo.Async(x =>
+    {
+        x.File("logs/log.txt", rollingInterval: RollingInterval.Day,
+                               rollOnFileSizeLimit: true,
+                               retainedFileCountLimit: 31,
+                               shared: true,
+                               flushToDiskInterval: TimeSpan.FromSeconds(0.5)
+
+    ).CreateLogger();
 
 // Configure the logging factory
 builder.Logging.ClearProviders();

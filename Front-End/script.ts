@@ -1,14 +1,7 @@
-const https = require("https");
 const axios = require("axios");
-
-// Create an instance of an HTTPS agent with verification disabled
-const httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-});
 
 const api = axios.create({
   baseURL: "https://localhost:7184/api",
-  httpsAgent,
 });
 
 interface TodoItem {
