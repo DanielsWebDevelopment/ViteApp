@@ -14,6 +14,17 @@ builder.Services.AddDbContext<DatabaseContext>(opt => opt.UseInMemoryDatabase("T
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:5173") 
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
+
 // Configure Serilog to write to a log file
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -70,6 +81,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
