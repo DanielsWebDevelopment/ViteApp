@@ -20,7 +20,7 @@ public class ToDoItemsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ToDoItemDTO>>> GetToDoItems()
     {
-        return await _context.ToDoItems.Select(x => ItemToDTO(x)).ToListAsync();
+        return await _context.ToDoItems.OrderBy(x => x.Id).Select(x => ItemToDTO(x)).ToListAsync();
     }
 
     // GET: api/ToDoItems/5
