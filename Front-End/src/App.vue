@@ -1,21 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import axios from 'axios'
+import axios from 'axios';
+
+interface Todo {
+  id: number;
+  name: string;
+  isComplete: boolean;
+};
 
 const api = axios.create({
   baseURL: "https://localhost:7184/api",
 });
 
 const itemId = ref(1);
-const todos = ref([]);
-const responseGetById = ref(null);
-const hideCompleted = ref(false)
+const todos = ref<Todo[]>([]);
+const responseGetById = ref<Todo | null>(null);
+const hideCompleted = ref(false);
 
-const filteredTodos = computed(() => {
+const filteredTodos = computed<Todo[]>(() => {
   return hideCompleted.value
     ? todos.value.filter((t) => !t.isComplete)
-    : todos.value
-})
+    : todos.value;
+});
 
 const putTodoItem = reactive({
   Id: itemId.value,
@@ -25,26 +31,23 @@ const putTodoItem = reactive({
 
 const postTodoItem = reactive({
   Name: '',
-  IsComplete: false,
 });
 
 async function getAllTodoItemsAsync() {
   try {
-    const response = await api.get("/ToDoItems");
-    todos.value = response.data;
+    todos.value  = (await api.get("/ToDoItems")).data;
   } catch (error) {
     console.error(error);
   }
-}
+};
 
-async function getTodoItemByIdAsync(id) {
+async function getTodoItemByIdAsync(id: number) {
   try {
-    const response = await api.get(`/ToDoItems/${id}`);
-    responseGetById.value = response.data;
+    responseGetById.value = (await api.get(`/ToDoItems/${id}`)).data;
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 async function putTodoItemAsync() {
   try {
@@ -57,54 +60,53 @@ async function putTodoItemAsync() {
     console.error(error);
   } finally {
     resetPutTodoItem();
-    getAllTodoItemsAsync();
+    await getAllTodoItemsAsync();
   }
-}
+};
 
 async function postTodoItemAsync() {
   try {
     await api.post("/ToDoItems", {
       Name: postTodoItem.Name,
-      IsComplete: postTodoItem.IsComplete,
+      IsComplete: false,
     });
   } catch (error) {
     console.error(error);
   } finally {
     resetPostTodoItem();
-    getAllTodoItemsAsync();
+    await getAllTodoItemsAsync();
   }
-}
+};
 
-async function deleteTodoItemByIdAsync(id) {
+async function deleteTodoItemByIdAsync(id: number) {
   try {
     await api.delete(`/ToDoItems/${id}`);
   } catch (error) {
     console.error(error);
   } finally {
     itemId.value++;
-    getAllTodoItemsAsync();
+    await getAllTodoItemsAsync();
   }
-}
+};
 
-async function updateTodoStatus(todo) {
+async function updateTodoStatus(todo: Todo) {
   putTodoItem.Id = todo.id;
+  putTodoItem.Name = todo.name;
   putTodoItem.IsComplete = !todo.isComplete;
-  await putTodoItemAsync()
-}
+  await putTodoItemAsync();
+};
 
 function resetPutTodoItem() {
   putTodoItem.Id = itemId.value;
   putTodoItem.Name = '';
   putTodoItem.IsComplete = false;
-}
+};
 
 function resetPostTodoItem() {
   postTodoItem.Name = '';
-  postTodoItem.IsComplete = false;
-}
+};
 
-onMounted(getAllTodoItemsAsync());
-
+onMounted(getAllTodoItemsAsync);
 </script>
 
 <template>
@@ -119,12 +121,6 @@ onMounted(getAllTodoItemsAsync());
           <span>Nome</span>
           <input type="text" maxlength="20" v-model="postTodoItem.Name" required>
         </div>
-
-        <div>
-          <span>IsComplete?</span>
-          <input type="checkbox" v-model="postTodoItem.IsComplete">
-        </div>
-
         <button type="submit">Adicionar</button>
       </form>
     </div>
@@ -154,44 +150,6 @@ onMounted(getAllTodoItemsAsync());
         {{ hideCompleted ? 'Show all' : 'Hide completed' }}
       </button>
     </div>
-
-    <!-- <div>
-        <form @submit.prevent="getTodoItemByIdAsync(itemId)">
-          <input type="number" min="1" max="100" v-model="itemId">
-          <button type="submit">Buscar Por id</button>
-        </form>
-        <div> {{ responseGetById }} </div>
-      </div> -->
-
-    <!-- <div>
-        <h1>putTodoItemAsync</h1>
-        <form @submit.prevent="putTodoItemAsync">
-          <div>
-            <span>Especifique o todo item por Id</span>
-            <input type="number" min="1" v-model="itemId">
-          </div>
-
-          <div>
-            <span>Novo Nome</span>
-            <input type="text" maxlength="100" v-model="putTodoItem.Name" required>
-          </div>
-
-          <div>
-            <span>IsComplete?</span>
-            <input type="checkbox" v-model="putTodoItem.IsComplete">
-          </div>
-
-          <button type="submit">Modificar</button>
-        </form>
-      </div> -->
-
-    <!-- <div>
-        <h1>deleteTodoItemByIdAsync</h1>
-        <form @submit.prevent="deleteTodoItemByIdAsync">
-          <input type="number" min="1" max="100" v-model="itemId">
-          <button type="submit">Deletar</button>
-        </form>
-      </div> -->
   </main>
   <footer>
     &copy; 2023 PedroHenriqueW
