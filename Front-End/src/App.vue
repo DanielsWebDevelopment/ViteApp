@@ -12,9 +12,7 @@ const api = axios.create({
   baseURL: "https://localhost:7184/api",
 });
 
-const itemId = ref(1);
 const todos = ref<Todo[]>([]);
-const responseGetById = ref<Todo | null>(null);
 const hideCompleted = ref(false);
 
 const filteredTodos = computed<Todo[]>(() => {
@@ -23,43 +21,28 @@ const filteredTodos = computed<Todo[]>(() => {
     : todos.value;
 });
 
-const putTodoItem = reactive({
-  Id: itemId.value,
-  Name: '',
-  IsComplete: false,
-});
-
 const postTodoItem = reactive({
   Name: '',
 });
 
 async function getAllTodoItemsAsync() {
   try {
-    todos.value  = (await api.get("/ToDoItems")).data;
+    todos.value = (await api.get("/ToDoItems")).data;
   } catch (error) {
     console.error(error);
   }
 };
 
-async function getTodoItemByIdAsync(id: number) {
+async function putTodoItemAsync(todo: Todo) {
   try {
-    responseGetById.value = (await api.get(`/ToDoItems/${id}`)).data;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-async function putTodoItemAsync() {
-  try {
-    await api.put(`/ToDoItems/${itemId.value}`, {
-      Id: putTodoItem.Id,
-      Name: putTodoItem.Name,
-      IsComplete: putTodoItem.IsComplete,
+    await api.put(`/ToDoItems/${todo.id}`, {
+      Id: todo.id,
+      Name: todo.name,
+      IsComplete: !todo.isComplete,
     });
   } catch (error) {
     console.error(error);
   } finally {
-    resetPutTodoItem();
     await getAllTodoItemsAsync();
   }
 };
@@ -73,7 +56,7 @@ async function postTodoItemAsync() {
   } catch (error) {
     console.error(error);
   } finally {
-    resetPostTodoItem();
+    postTodoItem.Name = '';
     await getAllTodoItemsAsync();
   }
 };
@@ -84,26 +67,8 @@ async function deleteTodoItemByIdAsync(id: number) {
   } catch (error) {
     console.error(error);
   } finally {
-    itemId.value++;
     await getAllTodoItemsAsync();
   }
-};
-
-async function updateTodoStatus(todo: Todo) {
-  putTodoItem.Id = todo.id;
-  putTodoItem.Name = todo.name;
-  putTodoItem.IsComplete = !todo.isComplete;
-  await putTodoItemAsync();
-};
-
-function resetPutTodoItem() {
-  putTodoItem.Id = itemId.value;
-  putTodoItem.Name = '';
-  putTodoItem.IsComplete = false;
-};
-
-function resetPostTodoItem() {
-  postTodoItem.Name = '';
 };
 
 onMounted(getAllTodoItemsAsync);
@@ -137,11 +102,9 @@ onMounted(getAllTodoItemsAsync);
         <tbody>
           <tr v-for="todo in filteredTodos" :key="todo.id">
             <td class="row-name">{{ todo.name }}</td>
-            <td><input type="checkbox" :checked="todo.isComplete" @change="updateTodoStatus(todo)"></td>
+            <td><input type="checkbox" :checked="todo.isComplete" @change="putTodoItemAsync(todo)"></td>
             <td>
-              <button>Read</button> |
-              <button>Update</button> |
-              <button @click="deleteTodoItemByIdAsync(todo.id)">Delete</button>
+              <button @click="deleteTodoItemByIdAsync(todo.id)">X</button>
             </td>
           </tr>
         </tbody>
@@ -157,11 +120,20 @@ onMounted(getAllTodoItemsAsync);
 </template>
 
 <style scoped>
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
 main {
   display: flex;
   flex-direction: column;
-  padding: 30px;
-  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex: 1;
+  padding: 10px;
 }
 
 .table-container {
@@ -189,5 +161,12 @@ main {
 
 .todo-table tbody tr:hover {
   background-color: #f9f9f9;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }
 </style>
