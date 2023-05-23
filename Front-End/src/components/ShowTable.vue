@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useTodoStore } from '@/stores/TodoStore';
+import RowName from './RowName.vue';
 
 const todoStore = useTodoStore();
 const hideCompleted = ref(false);
@@ -9,13 +10,18 @@ interface Todo {
     id: number,
     name: string,
     isComplete: boolean
-}
+};
 
 const filteredTodos = computed<Todo[]>(() => {
     return hideCompleted.value
         ? todoStore.todos.filter(todo => !todo.isComplete)
         : todoStore.todos;
 });
+
+async function updateTodoNameAsync(todo: Todo, newName: string) {
+    todo.name = newName;
+    await todoStore.updateTodoItemAsync(todo);
+};
 
 onMounted(todoStore.getAllTodoItemsAsync);
 </script>
@@ -32,7 +38,7 @@ onMounted(todoStore.getAllTodoItemsAsync);
             </thead>
             <tbody>
                 <tr v-for="todo in filteredTodos" :key="todo.id">
-                    <td class="row-name">{{ todo.name }}</td>
+                    <RowName :name="todo.name" @response="(newName:any) => updateTodoNameAsync(todo, newName)"></RowName>
                     <td><input type="checkbox" :checked="todo.isComplete" @change="todoStore.updateTodoItemAsync(todo)"></td>
                     <td>
                         <button @click="todoStore.deleteTodoItemByIdAsync(todo.id)">X</button>
