@@ -37,6 +37,20 @@ export const useTodoStore = defineStore("todo", () => {
     }
   }
 
+  async function updateTodoNameAsync(todo: Todo) {
+    try {
+      await api.put(`/ToDoItems/${todo.id}`, {
+        Id: todo.id,
+        Name: todo.name,
+        IsComplete: todo.isComplete,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await getAllTodoItemsAsync();
+    }
+  }
+
   async function createTodoItemAsync(name: string) {
     try {
       await api.post("/ToDoItems", {
@@ -65,6 +79,7 @@ export const useTodoStore = defineStore("todo", () => {
     todos,
     getAllTodoItemsAsync,
     updateTodoItemAsync,
+    updateTodoNameAsync,
     createTodoItemAsync,
     deleteTodoItemByIdAsync,
   };

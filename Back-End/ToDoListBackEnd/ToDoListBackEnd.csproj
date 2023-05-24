@@ -25,10 +25,10 @@
 
   <ItemGroup>
     <None Remove="Models\" />
-    <None Remove="Context\" />
+    <None Remove="Data\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Context\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 </Project>

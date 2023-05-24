@@ -20,7 +20,7 @@ const filteredTodos = computed<Todo[]>(() => {
 
 async function updateTodoNameAsync(todo: Todo, newName: string) {
     todo.name = newName;
-    await todoStore.updateTodoItemAsync(todo);
+    await todoStore.updateTodoNameAsync(todo);
 };
 
 onMounted(todoStore.getAllTodoItemsAsync);

@@ -15,7 +15,7 @@ async function updateName() {
 </script>
 
 <template>
-    <td class="row-name"><input type="text" name="" id="" @blur="updateName()" v-model="name"></td>
+    <td class="row-name"><input type="text" name="" id="" maxlength="20" @blur="updateName()" v-model="name"></td>
 </template>
 
 <style scoped>
