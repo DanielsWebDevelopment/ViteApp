@@ -1,4 +1,6 @@
-﻿using Serilog;
+﻿using ToDoListBackEnd.Repositories.Interfaces;
+using ToDoListBackEnd.Repositories.Services;
+using Serilog;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
@@ -8,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<IJsonDataManager, JsonDataManager>();
 
 builder.Services.AddCors(options =>
 {

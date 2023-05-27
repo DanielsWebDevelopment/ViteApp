@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ToDoListBackEnd.Data;
 using ToDoListBackEnd.Models;
+using ToDoListBackEnd.Repositories.Interfaces;
 
 namespace ToDoListBackEnd.Controllers;
 
@@ -8,11 +8,11 @@ namespace ToDoListBackEnd.Controllers;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly JsonDataManager _jsonDataManager;
+    private readonly IJsonDataManager _jsonDataManager;
 
-    public ToDoItemsController()
+    public ToDoItemsController(IJsonDataManager jsonDataManager)
     {
-        _jsonDataManager = new JsonDataManager();
+        _jsonDataManager = jsonDataManager;
     }
 
     // GET: api/ToDoItems

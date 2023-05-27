@@ -1,9 +1,11 @@
-﻿using ToDoListBackEnd.Models;
+﻿using ToDoListBackEnd.Repositories.Interfaces;
+
+using ToDoListBackEnd.Models;
 using System.Text.Json;
 
-namespace ToDoListBackEnd.Data;
+namespace ToDoListBackEnd.Repositories.Services;
 
-public class JsonDataManager
+public class JsonDataManager : IJsonDataManager
 {
     private readonly string _jsonFilePath = "data.json";
 
