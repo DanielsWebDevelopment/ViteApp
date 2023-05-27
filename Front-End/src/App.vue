@@ -8,8 +8,8 @@ import showTable from './components/ShowTable.vue';
     <h1>To Do List</h1>
   </header>
   <main>
-    <createTodoItem></createTodoItem>
-    <showTable></showTable>
+    <createTodoItem />
+    <showTable />
   </main>
   <footer>
     &copy; 2023 PedroHenriqueW

@@ -38,7 +38,7 @@ onMounted(todoStore.getAllTodoItemsAsync);
             </thead>
             <tbody>
                 <tr v-for="todo in filteredTodos" :key="todo.id">
-                    <RowName :name="todo.name" @response="(newName:any) => updateTodoNameAsync(todo, newName)"></RowName>
+                    <RowName :name="todo.name" @response="(newName:any) => updateTodoNameAsync(todo, newName)" />
                     <td><input type="checkbox" :checked="todo.isComplete" @change="todoStore.updateTodoItemAsync(todo)"></td>
                     <td>
                         <button @click="todoStore.deleteTodoItemByIdAsync(todo.id)">X</button>
