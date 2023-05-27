@@ -23,4 +23,9 @@
     </div>
 </div>
 
-<div><i>English is not my first language</i></div>
+<div>
+    <h3>Project:</h3>
+    <img src="Readme/ToDoListGIF.gif" alt="Project Gif">
+</div>
+<div>Feel free to further improve the project on your own.</div>
+<div><i>Note: English is not my first language</i></div>

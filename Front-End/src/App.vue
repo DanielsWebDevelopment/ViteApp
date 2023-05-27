@@ -12,7 +12,7 @@ import showTable from './components/ShowTable.vue';
     <showTable />
   </main>
   <footer>
-    &copy; 2023 PedroHenriqueW
+    <a href="https://vuejs.org/">Vue</a>
   </footer>
 </template>
 
