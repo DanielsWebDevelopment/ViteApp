@@ -18,6 +18,7 @@
         <ol>
             <li>Typescript</li>
             <li>Pinia</li>
+            <li>Axios</li>
         </ol>
     </div>
 </div>
