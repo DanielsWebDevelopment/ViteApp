@@ -28,7 +28,7 @@ export const useTodoStore = defineStore("todo", () => {
       await api.put(`/ToDoItems/${todo.id}`, {
         Id: todo.id,
         Name: todo.name,
-        IsComplete: !todo.isComplete,
+        IsComplete: todo.isComplete,
       });
     } catch (error) {
       console.error(error);
@@ -43,6 +43,20 @@ export const useTodoStore = defineStore("todo", () => {
         Id: todo.id,
         Name: todo.name,
         IsComplete: todo.isComplete,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await getAllTodoItemsAsync();
+    }
+  }
+
+  async function updateTodoStatusAsync(todo: Todo) {
+    try {
+      await api.put(`/ToDoItems/${todo.id}`, {
+        Id: todo.id,
+        Name: todo.name,
+        IsComplete: !todo.isComplete,
       });
     } catch (error) {
       console.error(error);
@@ -80,6 +94,7 @@ export const useTodoStore = defineStore("todo", () => {
     getAllTodoItemsAsync,
     updateTodoItemAsync,
     updateTodoNameAsync,
+    updateTodoStatusAsync,
     createTodoItemAsync,
     deleteTodoItemByIdAsync,
   };
